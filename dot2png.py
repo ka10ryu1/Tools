@@ -5,14 +5,12 @@ help = 'dot言語で記述されたファイルをPNG形式に変換する'
 #
 
 import os
-import sys
 # pydot: 1.2.4
 # graphviz: 0.8.2
 import pydot
 import argparse
 
-[sys.path.append(d) for d in ['./Lib/', '../Lib/'] if os.path.isdir(d)]
-from myfunc import argsPrint, getFilePath
+from func import argsPrint, getFilePath
 
 
 def command():

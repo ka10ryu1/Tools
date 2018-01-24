@@ -5,14 +5,12 @@ help = 'logファイルの複数比較'
 #
 
 import os
-import sys
 import json
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
-[sys.path.append(d) for d in ['./Lib/', '../Lib/'] if os.path.isdir(d)]
-from myfunc import argsPrint, getFilePath
+from func import argsPrint, getFilePath
 
 
 def command():
@@ -47,6 +45,7 @@ def jsonRead(path):
 
 def main(args):
     vml = []
+    vma = []
     for d in args.log_dir:
         # args.log_dirがディレクトリのパスかどうか判定
         if not os.path.isdir(d):
@@ -60,8 +59,10 @@ def main(args):
             if(ext == '.log'):
                 print(l)
                 data = jsonRead(os.path.join(d, l))
-                buf = [i['validation/main/loss'] for i in data]
-                vml.append(buf)
+                loss = [i['validation/main/loss'] for i in data]
+                acc = [i['validation/main/accuracy'] for i in data]
+                vml.append(loss)
+                vma.append(acc)
 
     # logファイルが見つからなかった場合、ここで終了
     if len(vml) == 0:
@@ -70,7 +71,7 @@ def main(args):
 
     # 対数グラフの設定
     f = plt.figure()
-    a = f.add_subplot(111)
+    a = f.add_subplot(121)
     a.grid(which='major', color='black', linestyle='-')
     a.grid(which='minor', color='black', linestyle='-')
     plt.yscale("log")
@@ -85,9 +86,19 @@ def main(args):
 
     # 数値のプロット
     [a.plot(np.array(v), label=d) for v, d in zip(vml, args.log_dir)]
+
+    b = f.add_subplot(122)
+    b.grid(which='major', color='black', linestyle='-')
+    b.grid(which='minor', color='black', linestyle='-')
+    # 数値のプロット
+    [b.plot(np.array(v), label=d) for v, d in zip(vma, args.log_dir)]
+
     # グラフの保存と表示
-    plt.legend()
-    plt.savefig(getFilePath(args.out_path, 'plot_diff', '.png'), dpi=200)
+    plt.legend(loc='lower right')
+    plt.savefig(
+        getFilePath(args.out_path, 'plot_diff', '.png'),
+        dpi=200
+    )
     plt.show()
 
 
