@@ -49,6 +49,7 @@ def main(args):
 
     vml = []
     vma = []
+    log_file = []
     for d in args.log_dir:
         # args.log_dirがディレクトリのパスかどうか判定
         if not os.path.isdir(d):
@@ -60,8 +61,9 @@ def main(args):
             # 拡張子が.logのファイルを探索し、testデータのlossを抽出
             name, ext = os.path.splitext(os.path.basename(l))
             if(ext == '.log'):
-                print(l)
-                data = jsonRead(os.path.join(d, l))
+                log_file.append(os.path.join(d, l))
+                print(log_file[-1])
+                data = jsonRead(log_file[-1])
                 vml.append([i[loss_str] for i in data if(loss_str in i.keys())])
                 vma.append([i[acc_str] for i in data if(acc_str in i.keys())])
 
@@ -78,7 +80,7 @@ def main(args):
         loc = 'lower right'
 
     # 対数グラフの設定
-    f = plt.figure()
+    f = plt.figure(figsize=(10, 6))
     a = f.add_subplot(sub)
     a.grid(which='major', color='black', linestyle='-')
     a.grid(which='minor', color='black', linestyle='-')
@@ -93,7 +95,7 @@ def main(args):
         print('loss ymin:{0:.4f}, ymax:{1:.4f}'.format(ymin, ymax))
 
     # 数値のプロット
-    [a.plot(np.array(v), label=d) for v, d in zip(vml, args.log_dir)]
+    [a.plot(np.array(v), label=d) for v, d in zip(vml, log_file)]
 
     if vma[0]:
         b = f.add_subplot(sub + 1)
@@ -105,7 +107,7 @@ def main(args):
             print('acc ymin:{0:.4f}, ymax:{1:.4f}'.format(ymin, ymax))
 
         # 数値のプロット
-        [b.plot(np.array(v), label=d) for v, d in zip(vma, args.log_dir)]
+        [b.plot(np.array(v), label=d) for v, d in zip(vma, log_file)]
 
     # グラフの保存と表示
     plt.legend(loc=loc)
