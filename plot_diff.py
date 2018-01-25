@@ -74,15 +74,15 @@ def main(args):
     a = f.add_subplot(121)
     a.grid(which='major', color='black', linestyle='-')
     a.grid(which='minor', color='black', linestyle='-')
-    plt.yscale("log")
+    a.set_yscale("log")
     # args.auto_ylimが設定された場合、ylimを設定する
     # ymax: 各データの1/8番目（400個データがあれば50番目）のうち最小の数を最大値とする
     # ymin: 各データのうち最小の数X0.98を最小値とする
     if args.auto_ylim:
         ymax = np.min([i[int(len(i) / 8)] for i in vml])
         ymin = np.min([np.min(i)for i in vml]) * 0.98
-        plt.ylim([ymin, ymax])
-        print('ymin:{0:.4f}, ymax:{1:.4f}'.format(ymin, ymax))
+        a.set_ylim([ymin, ymax])
+        print('loss ymin:{0:.4f}, ymax:{1:.4f}'.format(ymin, ymax))
 
     # 数値のプロット
     [a.plot(np.array(v), label=d) for v, d in zip(vml, args.log_dir)]
@@ -90,6 +90,10 @@ def main(args):
     b = f.add_subplot(122)
     b.grid(which='major', color='black', linestyle='-')
     b.grid(which='minor', color='black', linestyle='-')
+    # args.auto_ylimが設定された場合、ylimを設定する
+    if args.auto_ylim:
+        b.set_ylim([0.7, 1])
+        print('acc ymin:{0:.4f}, ymax:{1:.4f}'.format(ymin, ymax))
     # 数値のプロット
     [b.plot(np.array(v), label=d) for v, d in zip(vma, args.log_dir)]
 
