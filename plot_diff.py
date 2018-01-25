@@ -44,6 +44,9 @@ def jsonRead(path):
 
 
 def main(args):
+    loss_str = 'validation/main/loss'
+    acc_str = 'validation/main/accuracy'
+
     vml = []
     vma = []
     for d in args.log_dir:
@@ -59,19 +62,24 @@ def main(args):
             if(ext == '.log'):
                 print(l)
                 data = jsonRead(os.path.join(d, l))
-                loss = [i['validation/main/loss'] for i in data]
-                acc = [i['validation/main/accuracy'] for i in data]
-                vml.append(loss)
-                vma.append(acc)
+                vml.append([i[loss_str] for i in data if(loss_str in i.keys())])
+                vma.append([i[acc_str] for i in data if(acc_str in i.keys())])
 
     # logファイルが見つからなかった場合、ここで終了
-    if len(vml) == 0:
+    if not vml[0]:
         print('[Error] .log not found')
         exit()
 
+    if not vma[0]:
+        sub = 111
+        loc = 'upper left'
+    else:
+        sub = 121
+        loc = 'lower right'
+
     # 対数グラフの設定
     f = plt.figure()
-    a = f.add_subplot(121)
+    a = f.add_subplot(sub)
     a.grid(which='major', color='black', linestyle='-')
     a.grid(which='minor', color='black', linestyle='-')
     a.set_yscale("log")
@@ -87,18 +95,21 @@ def main(args):
     # 数値のプロット
     [a.plot(np.array(v), label=d) for v, d in zip(vml, args.log_dir)]
 
-    b = f.add_subplot(122)
-    b.grid(which='major', color='black', linestyle='-')
-    b.grid(which='minor', color='black', linestyle='-')
-    # args.auto_ylimが設定された場合、ylimを設定する
-    if args.auto_ylim:
-        b.set_ylim([0.7, 1])
-        print('acc ymin:{0:.4f}, ymax:{1:.4f}'.format(ymin, ymax))
-    # 数値のプロット
-    [b.plot(np.array(v), label=d) for v, d in zip(vma, args.log_dir)]
+    if vma[0]:
+        print(sub)
+        b = f.add_subplot(sub + 1)
+        b.grid(which='major', color='black', linestyle='-')
+        b.grid(which='minor', color='black', linestyle='-')
+        # args.auto_ylimが設定された場合、ylimを設定する
+        if args.auto_ylim:
+            b.set_ylim([0.7, 1])
+            print('acc ymin:{0:.4f}, ymax:{1:.4f}'.format(ymin, ymax))
+
+        # 数値のプロット
+        [b.plot(np.array(v), label=d) for v, d in zip(vma, args.log_dir)]
 
     # グラフの保存と表示
-    plt.legend(loc='lower right')
+    plt.legend(loc=loc)
     plt.savefig(
         getFilePath(args.out_path, 'plot_diff', '.png'),
         dpi=200
