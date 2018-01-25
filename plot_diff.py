@@ -96,7 +96,6 @@ def main(args):
     [a.plot(np.array(v), label=d) for v, d in zip(vml, args.log_dir)]
 
     if vma[0]:
-        print(sub)
         b = f.add_subplot(sub + 1)
         b.grid(which='major', color='black', linestyle='-')
         b.grid(which='minor', color='black', linestyle='-')
