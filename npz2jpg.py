@@ -21,7 +21,7 @@ def command():
     parser.add_argument('--img_num', '-n', type=int, default=10,
                         help='読み込む画像数（default: 10）')
     parser.add_argument('--random_seed', '-s', type=int, default=2,
-                        help='乱数シード（default: 2）')
+                        help='乱数シード（default: 2, random: -1）')
     parser.add_argument('--img_rate', '-r', type=int, default=4,
                         help='画像サイズの倍率（default: 4）')
     parser.add_argument('-o', '--out_path', default='./result/',
@@ -36,7 +36,9 @@ def main(args):
     raw = np_arr['raw']
 
     # 全てを画像化するのは無駄なのでランダムに抽出する
-    np.random.seed(args.random_seed)
+    if(args.random_seed >= 0):
+        np.random.seed(args.random_seed)
+
     shuffle = np.random.permutation(range(len(comp)))
     # ランダムに抽出した画像を結合する
     # 上半分にはcompの画像をimg_numの数だけ
