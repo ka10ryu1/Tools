@@ -28,7 +28,7 @@ def argsPrint(p, bar=30):
     print('-' * bar)
 
 
-def getFilePath(folder, name, ext):
+def getFilePath(folder, name, ext=''):
     if not os.path.isdir(folder):
         os.makedirs(folder)
 
