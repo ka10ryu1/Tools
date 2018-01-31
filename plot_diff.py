@@ -82,8 +82,8 @@ def main(args):
     # 対数グラフの設定
     f = plt.figure(figsize=(10, 6))
     a = f.add_subplot(sub)
-    a.grid(which='major', color='black', linestyle='-')
-    a.grid(which='minor', color='black', linestyle='-')
+    a.grid(which='major', color='gray', linestyle=':')
+    a.grid(which='minor', color='gray', linestyle=':')
     a.set_yscale("log")
     # args.auto_ylimが設定された場合、ylimを設定する
     # ymax: 各データの1/8番目（400個データがあれば50番目）のうち最小の数を最大値とする
