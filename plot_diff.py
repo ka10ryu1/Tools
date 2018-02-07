@@ -57,7 +57,7 @@ def main(args):
         vma.append([i[acc_str] for i in data if(acc_str in i.keys())])
 
     # logファイルが見つからなかった場合、ここで終了
-    if not vml[0]:
+    if not vml:
         print('[Error] .log not found')
         exit()
 
