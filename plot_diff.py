@@ -4,13 +4,12 @@
 help = 'logファイルの複数比較'
 #
 
-import os
 import json
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
-from func import argsPrint, getFilePath
+from func import argsPrint, getFilePath, sortTimeStamp
 
 
 def command():
@@ -50,22 +49,12 @@ def main(args):
     vml = []
     vma = []
     log_file = []
-    for d in args.log_dir:
-        # args.log_dirがディレクトリのパスかどうか判定
-        if not os.path.isdir(d):
-            print('[Error] this is not dir:', d)
-            continue
-
-        # ディレクトリごとにファイルのリストを作成
-        for l in os.listdir(d):
-            # 拡張子が.logのファイルを探索し、testデータのlossを抽出
-            name, ext = os.path.splitext(os.path.basename(l))
-            if(ext == '.log'):
-                log_file.append(os.path.join(d, l))
-                print(log_file[-1])
-                data = jsonRead(log_file[-1])
-                vml.append([i[loss_str] for i in data if(loss_str in i.keys())])
-                vma.append([i[acc_str] for i in data if(acc_str in i.keys())])
+    for l in sortTimeStamp(args.log_dir, '.log'):
+        log_file.append(l)
+        print(log_file[-1])
+        data = jsonRead(log_file[-1])
+        vml.append([i[loss_str] for i in data if(loss_str in i.keys())])
+        vma.append([i[acc_str] for i in data if(acc_str in i.keys())])
 
     # logファイルが見つからなかった場合、ここで終了
     if not vml[0]:
