@@ -105,6 +105,10 @@ def plot(args, search, loc, name):
         print('[Error] .log not found')
         exit()
 
+    if len(val[0]) == 0:
+        print('[Error] data not found:', search)
+        return 0
+
     # 対数グラフの設定
     f = plt.figure(figsize=(10, 6))
     a = f.add_subplot(111)
@@ -116,11 +120,13 @@ def plot(args, search, loc, name):
 
 
 def main(args):
-    if(args.label == 'loss'):
+    if(args.label == 'loss' or args.label == 'all'):
         plot(args, 'validation/main/loss', 'upper right', 'plot_diff_loss')
-    elif(args.label == 'acc'):
+
+    if(args.label == 'acc' or args.label == 'all'):
         plot(args, 'validation/main/accuracy', 'lower right', 'plot_diff_acc')
-    elif(args.label == 'lr'):
+
+    if(args.label == 'lr' or args.label == 'all'):
         plot(args, 'lr', 'lower right', 'plot_diff_lr')
 
 
