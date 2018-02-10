@@ -44,7 +44,7 @@ def jsonRead(path):
     return d
 
 
-def subplot(sub, val, log, ylim):
+def subplot(sub, val, log, ylim, line):
     """
     subplotを自動化
     [in] sub:  subplotオブジェクト
@@ -67,7 +67,8 @@ def subplot(sub, val, log, ylim):
         print('ymin:{0:.4f}, ymax:{1:.4f}'.format(ymin, ymax))
 
     # プロット
-    [sub.plot(np.array(v), label=d) for v, d in zip(val, log)]
+    [sub.plot(np.array(v), label=d, linestyle=line)
+     for v, d in zip(val, log)]
 
 
 def savePNG(plt, loc, name, dpi=200):
@@ -83,36 +84,41 @@ def savePNG(plt, loc, name, dpi=200):
     plt.savefig(getFilePath(args.out_path, name, '.png'), dpi=dpi)
 
 
-def plot(args, search, loc, name):
+def plot(args, loc, name, solid_line, dotted_line=''):
     """
     プロットメイン部
     [in] args:   オプション引数
-    [in] search: 探索ラベル
     [in] loc:    ラベルの位置
     [in] name:   保存するファイル名
+    [in] solid_line: 探索ラベル（実線）
+    [in] dotted_line: 探索ラベル（点線）
     """
 
-    val = []
+    sol = []
+    dot = []
     log_file = []
     for l in sortTimeStamp(args.log_dir, '.log'):
         log_file.append(l)
         print(log_file[-1])
         data = jsonRead(log_file[-1])
-        val.append([i[search] for i in data if(search in i.keys())])
+        sol.append([i[solid_line] for i in data if(solid_line in i.keys())])
+        dot.append([i[dotted_line] for i in data if(dotted_line in i.keys())])
 
     # logファイルが見つからなかった場合、ここで終了
-    if not val:
+    if not sol:
         print('[Error] .log not found')
         exit()
 
-    if len(val[0]) == 0:
-        print('[Error] data not found:', search)
+    if len(sol[0]) == 0:
+        print('[Error] data not found:', solid_line)
         return 0
 
     # 対数グラフの設定
     f = plt.figure(figsize=(10, 6))
     a = f.add_subplot(111)
-    subplot(a, val, log_file, args.auto_ylim)
+    subplot(a, sol, log_file, args.auto_ylim, '-')
+    plt.gca().set_prop_cycle(None)
+    subplot(a, dot, log_file, args.auto_ylim, ':')
 
     # グラフの保存と表示
     savePNG(plt, loc, name)
@@ -121,13 +127,15 @@ def plot(args, search, loc, name):
 
 def main(args):
     if(args.label == 'loss' or args.label == 'all'):
-        plot(args, 'validation/main/loss', 'upper right', 'plot_diff_loss')
+        plot(args, 'upper right', 'plot_diff_loss',
+             'validation/main/loss', 'main/loss')
 
     if(args.label == 'acc' or args.label == 'all'):
-        plot(args, 'validation/main/accuracy', 'lower right', 'plot_diff_acc')
+        plot(args, 'lower right', 'plot_diff_acc',
+             'validation/main/accuracy', 'main/accuracy')
 
     if(args.label == 'lr' or args.label == 'all'):
-        plot(args, 'lr', 'lower right', 'plot_diff_lr')
+        plot(args, 'lower right', 'plot_diff_lr', 'lr')
 
 
 if __name__ == '__main__':
