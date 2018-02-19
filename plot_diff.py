@@ -22,6 +22,8 @@ def command():
                         help='取得するラベル(default: loss, other: lr)')
     parser.add_argument('-o', '--out_path', default='./result/',
                         help='生成物の保存先(default: ./result/)')
+    parser.add_argument('--no_show', action='store_true',
+                        help='plt.show()を使用しない')
 
     return parser.parse_args()
 
@@ -84,7 +86,7 @@ def savePNG(plt, loc, name, dpi=200):
     plt.savefig(getFilePath(args.out_path, name, '.png'), dpi=dpi)
 
 
-def plot(args, loc, name, solid_line, dotted_line=''):
+def plot(args, loc, name, solid_line, dotted_line='', no_show=False):
     """
     プロットメイン部
     [in] args:   オプション引数
@@ -122,20 +124,24 @@ def plot(args, loc, name, solid_line, dotted_line=''):
 
     # グラフの保存と表示
     savePNG(plt, loc, name)
-    plt.show()
+    if not no_show:
+        plt.show()
 
 
 def main(args):
     if(args.label == 'loss' or args.label == 'all'):
         plot(args, 'upper right', 'plot_diff_loss',
-             'validation/main/loss', 'main/loss')
+             'validation/main/loss', 'main/loss',
+             no_show=args.no_show)
 
     if(args.label == 'acc' or args.label == 'all'):
         plot(args, 'lower right', 'plot_diff_acc',
-             'validation/main/accuracy', 'main/accuracy')
+             'validation/main/accuracy', 'main/accuracy',
+             no_show=args.no_show)
 
     if(args.label == 'lr' or args.label == 'all'):
-        plot(args, 'lower right', 'plot_diff_lr', 'lr')
+        plot(args, 'lower right', 'plot_diff_lr', 'lr',
+             no_show=args.no_show)
 
 
 if __name__ == '__main__':
