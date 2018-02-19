@@ -69,7 +69,7 @@ def subplot(sub, val, log, ylim, line):
         print('ymin:{0:.4f}, ymax:{1:.4f}'.format(ymin, ymax))
 
     # プロット
-    [sub.plot(np.array(v), label=d, linestyle=line)
+    [sub.plot(list(range(1, len(v)+1)), np.array(v), label=d, linestyle=line)
      for v, d in zip(val, log)]
 
 
@@ -118,6 +118,8 @@ def plot(args, loc, name, solid_line, dotted_line='', no_show=False):
     # 対数グラフの設定
     f = plt.figure(figsize=(10, 6))
     a = f.add_subplot(111)
+    plt.xlabel('epoch')
+    plt.ylabel(name.split('_')[-1])
     subplot(a, sol, log_file, args.auto_ylim, '-')
     plt.gca().set_prop_cycle(None)
     subplot(a, dot, log_file, args.auto_ylim, ':')
