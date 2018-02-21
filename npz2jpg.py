@@ -4,14 +4,15 @@
 help = '作成したデータセット（.npz）の中身を画像として出力する'
 #
 
-# import os
+import os
 import cv2
-# import sys
+import sys
 import argparse
 import numpy as np
 
-#[sys.path.append(d) for d in ['./Lib/', '../Lib/'] if os.path.isdir(d)]
+[sys.path.append(d) for d in ['./Lib/', '../Lib/'] if os.path.isdir(d)]
 from func import argsPrint, getFilePath
+import imgfunc as IMG
 
 
 def command():
@@ -32,8 +33,8 @@ def command():
 def main(args):
     # NPZ形式のファイルを読み込む
     np_arr = np.load(args.npz)
-    x = np_arr['x']
-    y = np_arr['y']
+    x = IMG.arr2imgs(np_arr['x'])
+    y = IMG.arr2imgs(np_arr['y'])
 
     if(len(x.shape) > len(y.shape)):
         y = [cv2.cvtColor(i, cv2.COLOR_GRAY2RGB) for i in y]
