@@ -20,13 +20,13 @@ def command():
     parser.add_argument('npz',
                         help='使用するnpzファイルのパス')
     parser.add_argument('--img_num', '-n', type=int, default=10,
-                        help='読み込む画像数（default: 10）')
+                        help='読み込む画像数 [default: 10]')
     parser.add_argument('--random_seed', '-s', type=int, default=2,
-                        help='乱数シード（default: 2, random: -1）')
-    parser.add_argument('--img_rate', '-r', type=float, default=4,
-                        help='画像サイズの倍率（default: 4）')
+                        help='乱数シード [default: 2, random: -1]')
+    parser.add_argument('--img_rate', '-r', type=float, default=1,
+                        help='画像サイズの倍率 [default: 1]')
     parser.add_argument('-o', '--out_path', default='./result/',
-                        help='・ (default: ./result/)')
+                        help='画像の出力先 [default: ./result/]')
     return parser.parse_args()
 
 
@@ -35,12 +35,12 @@ def main(args):
     np_arr = np.load(args.npz)
     x = IMG.arr2imgs(np_arr['x'])
     y = IMG.arr2imgs(np_arr['y'])
-
-    if(len(x.shape) > len(y.shape)):
+    ch = 3
+    if(x.shape[ch] > y.shape[ch]):
         y = [cv2.cvtColor(i, cv2.COLOR_GRAY2RGB) for i in y]
         y = np.array(y)
 
-    if(len(x.shape) > len(y.shape)):
+    if(x.shape[ch] > y.shape[ch]):
         x = [cv2.cvtColor(i, cv2.COLOR_GRAY2RGB) for i in x]
         x = np.array(x)
 
