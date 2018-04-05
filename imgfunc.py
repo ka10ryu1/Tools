@@ -34,23 +34,36 @@ def getCh(ch):
 
 
 def blank(size, color, dtype=np.uint8):
+    """
+    単色画像を生成する
+    [in]  size: 生成する画像サイズ [h,w,ch]（chがない場合は1を設定）
+    [in]  color: 色（intでグレー、tupleでカラー）
+    [in]  dtype: データ型
+    [out] img:   生成した単色画像
+    """
 
+    # サイズに負数がある場合はエラー
     if np.min(size) < 0:
         print('[Error] size > 0: {0}'.format(size))
         print(fileFuncLine())
         exit()
 
+    # サイズに縦横しか含まれていない場合はチャンネル追加
     if len(size) == 2:
         size = (size[0], size[1], 1)
 
+    # 色がintの場合（0 < color < 255）
     if type(color) is int:
         img = np.zeros(size, dtype=dtype)
         if color < 0:
             color = 0
+        elif color > 255:
+            color = 255
 
         img.fill(color)
         return img
 
+    # チャンネルが3じゃない時は3にする
     if size[2] != 3:
         size = (size[0], size[1], 3)
 
