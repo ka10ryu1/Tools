@@ -72,7 +72,7 @@ def blank(size, color, dtype=np.uint8):
     return img
 
 
-def isImgPath(name):
+def isImgPath(name, silent=False):
     """
     入力されたパスが画像か判定する
     [in]  name: 画像か判定したいパス
@@ -86,8 +86,10 @@ def isImgPath(name):
     if cv2.imread(name) is not None:
         return True
     else:
-        print('[{0}] is not Image'.format(name))
-        print(fileFuncLine())
+        if not silent:
+            print('[{0}] is not Image'.format(name))
+            print(fileFuncLine())
+
         return False
 
 
