@@ -573,9 +573,9 @@ def arr2img(arr, norm=255, dtype=np.uint8):
     """
 
     try:
-        w, h, ch = arr.shape
+        ch, h, w = arr.shape
     except:
-        w, h = arr.shape
+        h, w = arr.shape
         ch = 1
 
     y = np.array(arr).reshape((h, w, ch)) * norm
