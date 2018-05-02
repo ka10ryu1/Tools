@@ -251,7 +251,7 @@ def rotate(img, angle, scale, border=(0, 0, 0)):
     [out] 回転させた画像
     """
 
-    size = img.shape[:2]
+    size = (img.shape[1], img.shape[0])
     mat = cv2.getRotationMatrix2D((size[0] // 2, size[1] // 2), angle, scale)
     return cv2.warpAffine(img, mat, size, flags=cv2.INTER_CUBIC, borderValue=border)
 
