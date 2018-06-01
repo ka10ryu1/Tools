@@ -12,7 +12,7 @@ logging.getLogger('Tools').setLevel(level=level)
 
 import unittest
 
-import Tools.getfunc as GET
+import getfunc as GET
 
 
 class TestGetFunc(unittest.TestCase):
