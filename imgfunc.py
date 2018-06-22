@@ -127,7 +127,7 @@ def blank(size, color, dtype=np.uint8, min_val=0, max_val=255):
 
         logger.debug('\t0 < color < 255: {}', color)
         img.fill(color)
-        return img
+        return cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
     # チャンネルが3じゃない時は3にする
     if size[2] != 3:
