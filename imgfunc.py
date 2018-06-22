@@ -114,7 +114,11 @@ def blank(size, color, dtype=np.uint8, min_val=0, max_val=255):
     # サイズに縦横しか含まれていない場合はチャンネル追加
     if len(size) == 2:
         logger.debug('\tsize len = 2: {}'.format(size))
-        size = (size[0], size[1], 1)
+        size = (size[0], size[1])  # , 1)
+
+    if size[2] == 1:
+        logger.debug('\tch = 1: {}'.format(size))
+        size = (size[0], size[1])  # , 1)
 
     # 色がintの場合はグレースケールとして塗りつぶす
     # 0 < color < 255の範囲にない場合は丸める
@@ -127,7 +131,7 @@ def blank(size, color, dtype=np.uint8, min_val=0, max_val=255):
 
         logger.debug('\t0 < color < 255: {}', color)
         img.fill(color)
-        return cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        return img
 
     # チャンネルが3じゃない時は3にする
     if size[2] != 3:
