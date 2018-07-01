@@ -185,7 +185,7 @@ def splitSQN(imgs, size, round_num=-1, flg=cv2.BORDER_REPLICATE, w_rate=0.2):
         return np.array(out_imgs), (split[0], split[1])
 
 
-def vhstack(imgs, vh_size, img_size=None):
+def vhstack(imgs, vh_size=None, img_size=None):
     """
     splitSQ(N)された画像リストを連結する
     [in]  imgs:     splitSQ(N)された画像リスト
@@ -193,6 +193,12 @@ def vhstack(imgs, vh_size, img_size=None):
     [in]  img_size: 本来の画像サイズ
     [out] 連結された元サイズの画像
     """
+
+    if vh_size is None:
+        vh_size = (1, len(imgs))
+
+    if len(vh_size) != 2:
+        vh_size = (1, len(imgs))
 
     buf = [np.vstack(imgs[i * vh_size[0]: (i + 1) * vh_size[0]])
            for i in range(vh_size[1])]
