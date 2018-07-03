@@ -14,6 +14,7 @@ logger = getLogger(__name__)
 [sys.path.append(d) for d in ['./Tools/', '../Tools/'] if os.path.isdir(d)]
 from func import fileFuncLine
 from imgfunc.read_write import getCh
+from imgfunc.blank_img import black
 
 
 def cleary(img, clip_limit=3, grid=(8, 8), thresh=225):
@@ -200,13 +201,27 @@ def vhstack(imgs, vh_size=None, img_size=None):
     if len(vh_size) != 2:
         vh_size = (1, len(imgs))
 
+    if vh_size[0] != -1 and vh_size[1] == -1:
+        vh_size = (vh_size[0], int(len(imgs)/vh_size[0]+0.5))
+
+    if vh_size[0] == -1 and vh_size[1] != -1:
+        vh_size = (int(len(imgs)/vh_size[1]+0.5), vh_size[1])
+
+    if len(imgs) > vh_size[0]*vh_size[1]:
+        vh_size = (1, len(imgs))
+
+    if len(imgs) < vh_size[0]*vh_size[1]:
+        w, h, ch = imgs[0].shape
+        for i in range(vh_size[0]*vh_size[1] - len(imgs)):
+            imgs.append(black(w, h, ch))
+
     buf = [np.vstack(imgs[i * vh_size[0]: (i + 1) * vh_size[0]])
            for i in range(vh_size[1])]
 
     if img_size is None:
         return np.hstack(buf)
     else:
-        return np.hstack(buf)[:img_size[0], :img_size[1]]
+        return np.hstack(buf)[: img_size[0], : img_size[1]]
 
 
 def rotate(img, angle, scale, border=(0, 0, 0)):
