@@ -211,7 +211,12 @@ def vhstack(imgs, vh_size=None, img_size=None):
         vh_size = (1, len(imgs))
 
     if len(imgs) < vh_size[0]*vh_size[1]:
-        w, h, ch = imgs[0].shape
+        if len(imgs[0].shape) == 2:
+            w, h = imgs[0].shape
+            ch = 1
+        else:
+            w, h, ch = imgs[0].shape
+
         for i in range(vh_size[0]*vh_size[1] - len(imgs)):
             imgs.append(black(w, h, ch))
 
